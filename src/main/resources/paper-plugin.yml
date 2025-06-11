@@ -1,0 +1,7 @@
+name: PollPlugin
+version: '1.0'
+main: dev.wiji.PollPlugin
+description: Poll Plugin
+api-version: '1.21.5'
+loader: dev.wiji.PollPluginLoader
+

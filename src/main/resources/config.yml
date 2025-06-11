@@ -1,0 +1,11 @@
+storage: "redis" # Options: "redis", "mysql", "sqlite"
+mysql:
+  host: "localhost"
+  port: 3306
+  database: "mydatabase"
+  username: "myuser"
+  password: "mypassword"
+redis:
+  host: "localhost"
+  port: 6379
+  password: "" # Optional, leave empty if no password is set
