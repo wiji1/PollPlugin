@@ -2,12 +2,15 @@ package dev.wiji.features.inventory.inventories;
 import dev.wiji.features.inventory.controllers.InventoryManager;
 import dev.wiji.features.inventory.enums.ItemKey;
 import dev.wiji.features.inventory.itemstacks.NextPageItemStack;
+import dev.wiji.features.inventory.itemstacks.NoPollsItemStack;
 import dev.wiji.features.inventory.itemstacks.PreviousPageItemStack;
 import dev.wiji.features.inventory.models.CustomInventory;
 import dev.wiji.features.inventory.itemstacks.PollItemStack;
 import dev.wiji.features.poll.controllers.PollManager;
+import dev.wiji.features.poll.enums.PollStatus;
 import dev.wiji.features.poll.models.Poll;
 import net.kyori.adventure.text.Component;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
@@ -25,6 +28,13 @@ public class PollListInventory extends CustomInventory {
 	public PollListInventory(Player player) {
 		super(player);
 		this.polls = PollManager.getInstance().getPolls();
+
+		this.polls.sort((p1, p2) -> {
+			if (p1.getStatus() == PollStatus.ACTIVE && p2.getStatus() != PollStatus.ACTIVE) return -1;
+			if (p1.getStatus() != PollStatus.ACTIVE && p2.getStatus() == PollStatus.ACTIVE) return 1;
+			return Long.compare(p2.getCreationTimestamp(), p1.getCreationTimestamp());
+		});
+
 		init();
 	}
 
@@ -50,6 +60,10 @@ public class PollListInventory extends CustomInventory {
 
 			inventory.setItem(availableSlots[slotIndex], pollItem);
 			slotIndex++;
+		}
+
+		if (pollsOnPage.isEmpty()) {
+			inventory.setItem(22, new NoPollsItemStack(player).getItemStack());
 		}
 	}
 
@@ -114,7 +128,10 @@ public class PollListInventory extends CustomInventory {
 
 			if (poll == null) return;
 
-			if(poll.getPlayerResponses().containsKey(player.getUniqueId())) {
+			PollStatus status = poll.getStatus();
+
+			if(poll.getPlayerResponses().containsKey(player.getUniqueId())
+					&& status == PollStatus.ACTIVE) {
 				//TODO: Play noise
 				return;
 			}

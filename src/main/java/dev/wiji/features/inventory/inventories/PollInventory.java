@@ -1,10 +1,12 @@
 package dev.wiji.features.inventory.inventories;
 
+import dev.wiji.features.inventory.controllers.InventoryManager;
 import dev.wiji.features.inventory.enums.ItemKey;
 import dev.wiji.features.inventory.itemstacks.BackItemStack;
 import dev.wiji.features.inventory.models.CustomInventory;
 import dev.wiji.features.inventory.itemstacks.QuestionItemStack;
 import dev.wiji.features.inventory.itemstacks.ResponseItemStack;
+import dev.wiji.features.poll.enums.PollStatus;
 import dev.wiji.features.poll.models.Poll;
 import dev.wiji.features.poll.models.PollResponse;
 import net.kyori.adventure.text.Component;
@@ -12,6 +14,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
@@ -52,7 +55,7 @@ public class PollInventory extends CustomInventory {
 			int rowBaseSlot = row * 9;
 
 			for(int i = 0; i < itemsInThisRow; i++) {
-				ResponseItemStack responseItem = new ResponseItemStack(responses.get(responseIndex + i), player);
+				ResponseItemStack responseItem = new ResponseItemStack(poll, responses.get(responseIndex + i), player);
 				inventory.setItem(rowBaseSlot + startCol + (i * 2), responseItem.getItemStack());
 			}
 
@@ -94,23 +97,26 @@ public class PollInventory extends CustomInventory {
 	public void onClick(InventoryClickEvent event) {
 		event.setCancelled(true);
 
-		if(event.getCurrentItem() == null) return;
-		if(event.getCurrentItem().getItemMeta() == null) return;
+		if (event.getCurrentItem() == null) return;
+		if (event.getCurrentItem().getItemMeta() == null) return;
 
 		ItemStack clickedItem = event.getCurrentItem();
 		PersistentDataContainer container = clickedItem.getItemMeta().getPersistentDataContainer();
 
 		if (container.has(ItemKey.POLL_RESPONSE_UUID.get(), PersistentDataType.STRING)) {
+			if (poll.getStatus() == PollStatus.CLOSED) return;
+
 			String value = container.get(ItemKey.POLL_RESPONSE_UUID.get(), PersistentDataType.STRING);
 
 			if (value == null) return;
 
-			poll.respond((Player) event.getWhoClicked(),
-					UUID.fromString(value)
-			);
+			poll.respond((Player) event.getWhoClicked(), UUID.fromString(value));
 
 			//TODO: play sound and send message
 			inventory.close();
+		} else if (container.has(ItemKey.BACK.get())) {
+			PollListInventory pollListInventory = new PollListInventory(player);
+			InventoryManager.getInstance().openInventory(pollListInventory);
 		}
 
 	}

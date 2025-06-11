@@ -14,8 +14,7 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.logging.Logger;
 
-public
-class RedisStorage extends PluginStorage {
+public class RedisStorage extends PluginStorage {
 	private static final String STORAGE_KEY = "polls";
 	private Jedis storageJedis;
 
@@ -59,6 +58,14 @@ class RedisStorage extends PluginStorage {
 			String json = gson.toJson(poll);
 			storageJedis.hset(STORAGE_KEY, poll.getUuid().toString(), json);
 		});
+	}
+
+	@Override
+	public void deletePoll(Supplier<Poll> pollSupplier) {
+		Poll poll = pollSupplier.get();
+		if (poll != null && storageJedis.hexists(STORAGE_KEY, poll.getUuid().toString())) {
+			storageJedis.hdel(STORAGE_KEY, poll.getUuid().toString());
+		}
 	}
 
 	@Override

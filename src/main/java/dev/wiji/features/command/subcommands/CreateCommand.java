@@ -1,5 +1,7 @@
 package dev.wiji.features.command.subcommands;
 
+import com.mojang.brigadier.context.CommandContext;
+import dev.wiji.features.command.enums.Permission;
 import dev.wiji.features.command.models.SubCommand;
 import dev.wiji.features.poll.controllers.PollManager;
 import dev.wiji.features.poll.models.Poll;
@@ -11,11 +13,11 @@ import net.kyori.adventure.text.format.TextColor;
 
 public class CreateCommand extends SubCommand {
 	public CreateCommand() {
-		super("create");
+		super("create", Permission.ADMIN.get());
 	}
 
 	@Override
-	public int execute(CommandSourceStack source) {
+	public int execute(CommandSourceStack source, CommandContext<?> context) {
 
 		source.getSender().sendMessage(Component.text("Creating a new poll..."));
 
@@ -35,7 +37,8 @@ public class CreateCommand extends SubCommand {
 
 		Poll poll = new Poll(
 				question,
-				new PollResponse[]{response1, response2, response3}
+				new PollResponse[]{response1, response2, response3},
+				300000L
 		);
 
 		PollManager.getInstance().addPoll(poll);

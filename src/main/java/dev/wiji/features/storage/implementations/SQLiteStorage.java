@@ -28,9 +28,7 @@ public class SQLiteStorage extends SQLStorage {
 		return """
             CREATE TABLE IF NOT EXISTS %s (
                 uuid TEXT PRIMARY KEY,
-                poll_data TEXT NOT NULL,
-                created_at INTEGER DEFAULT (strftime('%%s', 'now')),
-                updated_at INTEGER DEFAULT (strftime('%%s', 'now'))
+                poll_data TEXT NOT NULL
             )
             """.formatted(TABLE_NAME);
 	}
@@ -38,9 +36,17 @@ public class SQLiteStorage extends SQLStorage {
 	@Override
 	protected String getUpsertSQL() {
 		return """
-            INSERT OR REPLACE INTO %s (uuid, poll_data, updated_at) 
-            VALUES (?, ?, strftime('%%s', 'now'))
+            INSERT OR REPLACE INTO %s (uuid, poll_data) 
+            VALUES (?, ?)
             """.formatted(TABLE_NAME);
+	}
+
+	@Override
+	protected String getRemoveSQL() {
+		return """
+			DELETE FROM %s 
+			WHERE uuid = ?
+			""".formatted(TABLE_NAME);
 	}
 
 	@Override

@@ -26,11 +26,13 @@ public class PollManager {
 	public void loadPolls() {
 		new Thread(() -> {
 			PluginStorage storage = StorageManager.getInstance().getStorage();
-			Logger logger = Logger.getLogger(PollManager.class.getName());
+			Logger logger = PollPlugin.getInstance().getLogger();
 
 			storage.loadPolls(loadedPolls -> {
 				this.polls = new ArrayList<>(loadedPolls);
 				logger.info("Loaded " + polls.size() + " polls from storage.");
+
+				initializePollIds();
 			});
 		}).start();
 	}
@@ -45,13 +47,48 @@ public class PollManager {
 		}).start();
 	}
 
+	public void removePoll(int pollId) {
+		new Thread(() -> {
+			Poll poll = getPollById(pollId);
+			if (poll != null) {
+				StorageManager.getInstance().getStorage().deletePoll(() -> poll);
+				PollIdManager.getInstance().removePoll(poll);
+
+				polls.remove(poll);
+			}
+		}).start();
+	}
+
+	public void closePoll(int pollId) {
+		Poll poll = getPollById(pollId);
+		if (poll != null) {
+			poll.close();
+			savePolls();
+		}
+	}
+
 	public List<Poll> getPolls() {
+
+		List<Poll> sortedPolls = PollIdManager.getInstance().getAllPollsSorted();
 		return polls;
 	}
 
 	public void addPoll(Poll poll) {
 		this.polls.add(poll);
 		savePolls();
+	}
+
+	public Poll getPollById(int id) {
+		return PollIdManager.getInstance().getPollById(id);
+	}
+
+	public List<Poll> getAllPollsSorted() {
+		return PollIdManager.getInstance().getAllPollsSorted();
+	}
+
+
+	public void initializePollIds() {
+		PollIdManager.getInstance().registerPolls(polls);
 	}
 
 	public static PollManager getInstance() {

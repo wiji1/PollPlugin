@@ -14,5 +14,7 @@ public abstract class PluginStorage {
 
 	public abstract void savePolls(Supplier<List<Poll>> pollSupplier);
 
+	public abstract void deletePoll(Supplier<Poll> pollSupplier);
+
 	public abstract void close();
 }

@@ -2,8 +2,13 @@ package dev.wiji.features.inventory.itemstacks;
 
 import dev.wiji.features.inventory.enums.ItemKey;
 import dev.wiji.features.inventory.models.CustomItemStack;
+import dev.wiji.features.poll.enums.PollStatus;
+import dev.wiji.features.poll.models.Poll;
 import dev.wiji.features.poll.models.PollResponse;
+import dev.wiji.utils.PercentageBarUtils;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
@@ -16,10 +21,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ResponseItemStack extends CustomItemStack {
+	private final Poll poll;
 	private final PollResponse response;
 
-	public ResponseItemStack(PollResponse response, Player player) {
+	public ResponseItemStack(Poll poll, PollResponse response, Player player) {
 		super(player);
+		this.poll = poll;
 		this.response = response;
 
 		build();
@@ -34,16 +41,30 @@ public class ResponseItemStack extends CustomItemStack {
 
 		List<Component> lore = new ArrayList<>();
 		lore.add(Component.text(""));
-		lore.add(Component.text("Click to vote for this response")
-				.color(TextColor.color(0xFFFE39))
-				.decoration(TextDecoration.ITALIC, false));
+
+		if (poll.getStatus() == PollStatus.CLOSED) {
+			PollResponse winningResponse = poll.getWinningResponse();
+			if (winningResponse == response) meta.setEnchantmentGlintOverride(true);
+
+			lore.add(Component.text("Votes: ", NamedTextColor.GRAY)
+					.append(Component.text(poll.getVotes(response), NamedTextColor.YELLOW))
+					.decoration(TextDecoration.ITALIC, false));
+
+
+			Component percentageBar = PercentageBarUtils.createGradientPercentageBar(poll.getVotePercentage(response));
+			lore.add(percentageBar.decoration(TextDecoration.ITALIC, false));
+
+			lore.add(Component.empty());
+			lore.add(Component.text("Voting has ended", NamedTextColor.RED)
+					.decoration(TextDecoration.ITALIC, false));
+		} else {
+			lore.add(Component.text("Click to vote for this response", NamedTextColor.YELLOW)
+					.decoration(TextDecoration.ITALIC, false));
+		}
+
 		meta.lore(lore);
 
 		meta.getPersistentDataContainer().set(ItemKey.POLL_RESPONSE_UUID.get(), PersistentDataType.STRING, response.getUuid().toString());
 		itemStack.setItemMeta(meta);
-	}
-
-	public PollResponse getResponse() {
-		return response;
 	}
 }

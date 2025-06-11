@@ -19,6 +19,7 @@ public abstract class SQLStorage extends PluginStorage {
     protected abstract void establishConnection() throws SQLException;
     protected abstract String getCreateTableSQL();
     protected abstract String getUpsertSQL();
+    protected abstract String getRemoveSQL();
 
     @Override
     public void init() {
@@ -107,6 +108,35 @@ public abstract class SQLStorage extends PluginStorage {
                 logger.severe("Failed to rollback transaction: " + rollbackEx.getMessage());
             }
         }
+    }
+
+    @Override
+    public void deletePoll(Supplier<Poll> pollSupplier) {
+        Poll poll = pollSupplier.get();
+        Logger logger = PollPlugin.getInstance().getLogger();
+
+
+        try (PreparedStatement pstmt = connection.prepareStatement(getRemoveSQL())) {
+            connection.setAutoCommit(false);
+
+            pstmt.setString(1, poll.getUuid().toString());
+
+            pstmt.execute();
+            connection.commit();
+            connection.setAutoCommit(true);
+
+            logger.info("Successfully deleted poll " + poll.getUuid() + " from " + getStorageType() + " database");
+        } catch (SQLException e) {
+            logger.severe("Failed to delete poll " + poll.getUuid() + " from " + getStorageType() + ": " + e.getMessage());
+            e.printStackTrace();
+            try {
+                connection.rollback();
+                connection.setAutoCommit(true);
+            } catch (SQLException rollbackEx) {
+                logger.severe("Failed to rollback transaction: " + rollbackEx.getMessage());
+            }
+        }
+
     }
 
     @Override

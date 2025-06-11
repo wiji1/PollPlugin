@@ -4,6 +4,7 @@ import dev.wiji.features.inventory.enums.ItemKey;
 import dev.wiji.features.inventory.models.CustomItemStack;
 import dev.wiji.features.poll.models.Poll;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
@@ -33,7 +34,11 @@ public class QuestionItemStack extends CustomItemStack {
 		meta.customName(poll.getQuestion().decoration(TextDecoration.ITALIC, false));
 
 		List<Component> lore = new ArrayList<>();
-		lore.add(Component.text(""));
+		lore.add(Component.empty());
+		lore.add(Component.text("Total Votes: ", NamedTextColor.GRAY)
+				.append(Component.text(poll.getPlayerResponses().size(), NamedTextColor.YELLOW))
+				.decoration(TextDecoration.ITALIC, false));
+		lore.add(Component.empty());
 		lore.add(Component.text("Respond with an option below")
 				.color(TextColor.color(0xFFFE39))
 				.decoration(TextDecoration.ITALIC, false)
