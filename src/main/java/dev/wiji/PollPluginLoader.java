@@ -18,6 +18,7 @@ public class PollPluginLoader implements PluginLoader {
 		resolver.addDependency(new Dependency(new DefaultArtifact("redis.clients:jedis:6.0.0"), null));
 		resolver.addDependency(new Dependency(new DefaultArtifact("com.google.code.gson:gson:2.10.1"), null));
 		resolver.addDependency(new Dependency(new DefaultArtifact("org.xerial:sqlite-jdbc:3.46.0.0"), null));
+		resolver.addDependency(new Dependency(new DefaultArtifact("mysql:mysql-connector-java:8.0.24"), null));
 
 		pluginClasspathBuilder.addLibrary(resolver);
 

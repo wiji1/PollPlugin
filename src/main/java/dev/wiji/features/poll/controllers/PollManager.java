@@ -24,21 +24,25 @@ public class PollManager {
 	}
 
 	public void loadPolls() {
-		PluginStorage storage = StorageManager.getInstance().getStorage();
-		Logger logger = Logger.getLogger(PollManager.class.getName());
+		new Thread(() -> {
+			PluginStorage storage = StorageManager.getInstance().getStorage();
+			Logger logger = Logger.getLogger(PollManager.class.getName());
 
-		storage.loadPolls(loadedPolls -> {
-			this.polls = new ArrayList<>(loadedPolls);
-			logger.info("Loaded " + polls.size() + " polls from storage.");
-		});
+			storage.loadPolls(loadedPolls -> {
+				this.polls = new ArrayList<>(loadedPolls);
+				logger.info("Loaded " + polls.size() + " polls from storage.");
+			});
+		}).start();
 	}
 
 	public void savePolls() {
-		PluginStorage storage = StorageManager.getInstance().getStorage();
-		Logger logger = PollPlugin.getInstance().getLogger();
+		new Thread(() -> {
+			PluginStorage storage = StorageManager.getInstance().getStorage();
+			Logger logger = PollPlugin.getInstance().getLogger();
 
-		storage.savePolls(() -> this.polls);
-		logger.info("Saved " + polls.size() + " polls to storage.");
+			storage.savePolls(() -> this.polls);
+			logger.info("Saved " + polls.size() + " polls to storage.");
+		}).start();
 	}
 
 	public List<Poll> getPolls() {

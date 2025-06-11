@@ -2,6 +2,7 @@ package dev.wiji;
 
 import dev.wiji.features.command.controllers.CommandManager;
 import dev.wiji.features.config.controllers.ConfigManager;
+import dev.wiji.features.inventory.controllers.InventoryManager;
 import dev.wiji.features.poll.controllers.PollManager;
 import dev.wiji.features.storage.controllers.StorageManager;
 import io.papermc.paper.command.brigadier.Commands;
@@ -21,6 +22,7 @@ public class PollPlugin extends JavaPlugin {
 		ConfigManager.getInstance().init(this);
 		StorageManager.getInstance().init();
 		PollManager.getInstance().init();
+		InventoryManager.getInstance().init(this);
 
 		this.getLifecycleManager().registerEventHandler(LifecycleEvents.COMMANDS, commands -> {
 			Commands registrar = commands.registrar();
