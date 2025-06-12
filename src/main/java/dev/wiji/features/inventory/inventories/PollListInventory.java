@@ -147,6 +147,7 @@ public class PollListInventory extends CustomInventory {
 
 			PollInventory pollInventory = new PollInventory(poll, player);
 			InventoryManager.getInstance().openInventory(pollInventory);
+			PluginSound.CLICK.play(player);
 
 		} else if (container.has(ItemKey.PREVIOUS_PAGE.get(), PersistentDataType.BYTE)) {
 			if (page > 0) {
