@@ -2,10 +2,7 @@ package dev.wiji.features.command.controllers;
 
 import dev.wiji.features.command.commands.PollCommand;
 import dev.wiji.features.command.models.Command;
-import dev.wiji.features.command.subcommands.CloseCommand;
-import dev.wiji.features.command.subcommands.CreateCommand;
-import dev.wiji.features.command.subcommands.ListCommand;
-import dev.wiji.features.command.subcommands.RemoveCommand;
+import dev.wiji.features.command.subcommands.*;
 import io.papermc.paper.command.brigadier.Commands;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
@@ -37,6 +34,7 @@ public class CommandManager {
 			.registerSubCommand(new ListCommand())
 			.registerSubCommand(new RemoveCommand())
 			.registerSubCommand(new CloseCommand())
+			.registerSubCommand(new TestCommand())
 			.build()
 		);
 	}

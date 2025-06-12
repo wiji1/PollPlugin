@@ -1,4 +1,5 @@
 package dev.wiji.features.inventory.inventories;
+import dev.wiji.features.command.enums.Permission;
 import dev.wiji.features.inventory.controllers.InventoryManager;
 import dev.wiji.features.inventory.enums.ItemKey;
 import dev.wiji.features.inventory.itemstacks.NextPageItemStack;
@@ -9,7 +10,9 @@ import dev.wiji.features.inventory.itemstacks.PollItemStack;
 import dev.wiji.features.poll.controllers.PollManager;
 import dev.wiji.features.poll.enums.PollStatus;
 import dev.wiji.features.poll.models.Poll;
+import dev.wiji.features.sound.PluginSound;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -21,7 +24,7 @@ import org.bukkit.persistence.PersistentDataType;
 import java.util.List;
 
 public class PollListInventory extends CustomInventory {
-	private final List<Poll> polls;
+	private List<Poll> polls;
 	private int page = 0;
 	private static final int POLLS_PER_PAGE = 5;
 
@@ -42,6 +45,12 @@ public class PollListInventory extends CustomInventory {
 	public void build() {
 		addPaginationControls();
 
+		if (!player.hasPermission(Permission.VIEW_RESULTS.get())
+				&& !player.hasPermission(Permission.ADMIN.get())) {
+
+			polls = polls.stream().filter(poll -> poll.getStatus() == PollStatus.ACTIVE).toList();
+		}
+
 		int startIndex = page * POLLS_PER_PAGE;
 		int endIndex = Math.min(startIndex + POLLS_PER_PAGE, polls.size());
 
@@ -61,7 +70,6 @@ public class PollListInventory extends CustomInventory {
 			if (slotIndex >= availableSlots.length) break;
 
 			ItemStack pollItem = new PollItemStack(poll, player).getItemStack();
-
 
 			inventory.setItem(availableSlots[slotIndex], pollItem);
 			slotIndex++;
@@ -133,7 +141,7 @@ public class PollListInventory extends CustomInventory {
 
 			if(poll.getPlayerResponses().containsKey(player.getUniqueId())
 					&& status == PollStatus.ACTIVE) {
-				//TODO: Play noise
+				PluginSound.ERROR.play(player);
 				return;
 			}
 
@@ -142,19 +150,18 @@ public class PollListInventory extends CustomInventory {
 
 		} else if (container.has(ItemKey.PREVIOUS_PAGE.get(), PersistentDataType.BYTE)) {
 			if (page > 0) {
+				PluginSound.CLICK.play(player);
 				page--;
 				rebuild();
-			} else {
-				//TODO: Play noise for no previous page
-			}
+			} else PluginSound.ERROR.play(player);
+
 		} else if (container.has(ItemKey.NEXT_PAGE.get(), PersistentDataType.BYTE)) {
 			int totalPages = (int) Math.ceil((double) polls.size() / POLLS_PER_PAGE);
 			if (page < totalPages - 1) {
+				PluginSound.CLICK.play(player);
 				page++;
 				rebuild();
-			} else {
-				//TODO: Play noise for no next page
-			}
+			} else PluginSound.ERROR.play(player);
 		}
 	}
 }

@@ -9,7 +9,9 @@ import dev.wiji.features.inventory.itemstacks.ResponseItemStack;
 import dev.wiji.features.poll.enums.PollStatus;
 import dev.wiji.features.poll.models.Poll;
 import dev.wiji.features.poll.models.PollResponse;
+import dev.wiji.features.sound.PluginSound;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
@@ -60,7 +62,7 @@ public class PollInventory extends CustomInventory {
 
 	@Override
 	public Component getName() {
-		return poll.getQuestion();
+		return poll.getQuestion().color(NamedTextColor.DARK_GRAY);
 	}
 
 	@Override
@@ -89,7 +91,10 @@ public class PollInventory extends CustomInventory {
 		PersistentDataContainer container = clickedItem.getItemMeta().getPersistentDataContainer();
 
 		if (container.has(ItemKey.POLL_RESPONSE_UUID.get(), PersistentDataType.STRING)) {
-			if (poll.getStatus() == PollStatus.CLOSED) return;
+			if (poll.getStatus() == PollStatus.CLOSED) {
+				PluginSound.ERROR.play(player);
+				return;
+			}
 
 			String value = container.get(ItemKey.POLL_RESPONSE_UUID.get(), PersistentDataType.STRING);
 
@@ -97,9 +102,10 @@ public class PollInventory extends CustomInventory {
 
 			poll.respond((Player) event.getWhoClicked(), UUID.fromString(value));
 
-			//TODO: play sound and send message
+			PluginSound.SUCCESS.play(player);
 			inventory.close();
 		} else if (container.has(ItemKey.BACK.get())) {
+			PluginSound.CLICK.play(player);
 			PollListInventory pollListInventory = new PollListInventory(player);
 			InventoryManager.getInstance().openInventory(pollListInventory);
 		}

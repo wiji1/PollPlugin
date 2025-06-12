@@ -2,6 +2,7 @@ package dev.wiji.features.command.enums;
 
 public enum Permission {
 	ADMIN("poll.admin"),
+	VIEW_RESULTS("poll.results"),
 	;
 
 	private final String permission;

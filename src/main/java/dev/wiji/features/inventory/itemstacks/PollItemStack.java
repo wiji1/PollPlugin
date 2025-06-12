@@ -31,7 +31,7 @@ public class PollItemStack extends CustomItemStack {
 
 	@Override
 	public void build() {
-		itemStack = new ItemStack(Material.PAPER);
+		itemStack = new ItemStack(poll.getIcon());
 		ItemMeta meta = itemStack.getItemMeta();
 
 		meta.displayName(poll.getQuestion().decoration(TextDecoration.ITALIC, false));
@@ -49,7 +49,7 @@ public class PollItemStack extends CustomItemStack {
 		lore.add(creationTime.decoration(TextDecoration.ITALIC, false));
 
 		boolean isActive = poll.getStatus() == PollStatus.ACTIVE;
-		Component endTime = Component.text("End" + (isActive ? "ed" : "s") + ": ", NamedTextColor.GRAY);
+		Component endTime = Component.text("End" + (isActive ? "s" : "ed") + ": ", NamedTextColor.GRAY);
 		String formattedEndTime = TimeUtils.getRelativeTime(poll.getCreationTimestamp() + poll.getDuration());
 		endTime = endTime.append(Component.text(formattedEndTime, NamedTextColor.WHITE));
 		lore.add(endTime.decoration(TextDecoration.ITALIC, false));

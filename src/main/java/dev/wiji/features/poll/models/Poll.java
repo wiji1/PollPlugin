@@ -4,6 +4,7 @@ import dev.wiji.features.poll.controllers.PollIdManager;
 import dev.wiji.features.poll.controllers.PollManager;
 import dev.wiji.features.poll.enums.PollStatus;
 import net.kyori.adventure.text.TextComponent;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
@@ -18,13 +19,15 @@ public class Poll {
 
 	private final Long creationTimestamp;
 	private Long duration;
+	private Material icon;
+
 	private boolean isClosed = false;
 
-	public Poll(TextComponent question, PollResponse[] responses, Long duration) {
-		this(UUID.randomUUID(), question, responses, duration);
+	public Poll(TextComponent question, PollResponse[] responses, Long duration, Material icon) {
+		this(UUID.randomUUID(), question, responses, duration, icon);
 	}
 
-	public Poll(UUID uuid, TextComponent question, PollResponse[] responses, Long duration) {
+	public Poll(UUID uuid, TextComponent question, PollResponse[] responses, Long duration, Material icon) {
 		this.uuid = uuid;
 		this.question = question;
 		this.responses = responses;
@@ -32,6 +35,7 @@ public class Poll {
 		this.playerResponses = new HashMap<>();
 		this.creationTimestamp = System.currentTimeMillis();
 		this.duration = duration;
+		this.icon = icon;
 
 		PollIdManager.getInstance().registerPoll(this);
 	}
@@ -89,6 +93,10 @@ public class Poll {
 		long currentTime = System.currentTimeMillis();
 		if(creationTimestamp + duration > currentTime && !isClosed) return PollStatus.ACTIVE;
 		else return PollStatus.CLOSED;
+	}
+
+	public Material getIcon() {
+		return icon;
 	}
 
 	public void close() {

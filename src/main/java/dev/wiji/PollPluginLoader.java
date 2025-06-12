@@ -23,6 +23,5 @@ public class PollPluginLoader implements PluginLoader {
 
 
 		pluginClasspathBuilder.addLibrary(resolver);
-
 	}
 }

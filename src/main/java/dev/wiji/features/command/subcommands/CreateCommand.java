@@ -3,13 +3,13 @@ package dev.wiji.features.command.subcommands;
 import com.mojang.brigadier.context.CommandContext;
 import dev.wiji.features.command.enums.Permission;
 import dev.wiji.features.command.models.SubCommand;
-import dev.wiji.features.poll.controllers.PollManager;
-import dev.wiji.features.poll.models.Poll;
-import dev.wiji.features.poll.models.PollResponse;
+import dev.wiji.features.inventory.controllers.InventoryManager;
+import dev.wiji.features.inventory.inventories.PollCreateInventory;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextComponent;
-import net.kyori.adventure.text.format.TextColor;
+import net.kyori.adventure.text.format.NamedTextColor;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 public class CreateCommand extends SubCommand {
 	public CreateCommand() {
@@ -19,41 +19,15 @@ public class CreateCommand extends SubCommand {
 	@Override
 	public int execute(CommandSourceStack source, CommandContext<?> context) {
 
-		source.getSender().sendMessage(Component.text("Creating a new poll..."));
 
-		TextComponent question = Component.text("Whats your favorite color?").color(TextColor.color(0, 0, 100));
+		CommandSender sender = source.getSender();
+		if (!(sender instanceof Player player)) {
+			sender.sendMessage(Component.text("This command can only be used by players.", NamedTextColor.RED));
+			return 0;
+		}
 
-		PollResponse response1 = new PollResponse(
-				Component.text("Red").color(TextColor.color(255, 0, 0))
-		);
-
-		PollResponse response2 = new PollResponse(
-				Component.text("Green").color(TextColor.color(0, 255, 0))
-		);
-
-		PollResponse response3 = new PollResponse(
-				Component.text("Blue").color(TextColor.color(0, 0, 255))
-		);
-
-		PollResponse response4 = new PollResponse(
-				Component.text("Yellow").color(TextColor.color(255, 0, 255))
-		);
-
-		PollResponse response5 = new PollResponse(
-				Component.text("Purple").color(TextColor.color(100, 0, 255))
-		);
-
-		PollResponse response6 = new PollResponse(
-				Component.text("Orange").color(TextColor.color(255, 100, 0))
-		);
-
-		Poll poll = new Poll(
-				question,
-				new PollResponse[]{response1, response2, response3, response4, response5, response6},
-				300000L
-		);
-
-		PollManager.getInstance().addPoll(poll);
+		PollCreateInventory inventory = new PollCreateInventory(player);
+		InventoryManager.getInstance().openInventory(inventory);
 
 		return 1;
 	}

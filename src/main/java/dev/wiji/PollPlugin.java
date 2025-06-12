@@ -1,5 +1,6 @@
 package dev.wiji;
 
+import dev.wiji.features.chat.controllers.ChatManager;
 import dev.wiji.features.command.controllers.CommandManager;
 import dev.wiji.features.config.controllers.ConfigManager;
 import dev.wiji.features.inventory.controllers.InventoryManager;
@@ -23,6 +24,7 @@ public class PollPlugin extends JavaPlugin {
 		StorageManager.getInstance().init();
 		PollManager.getInstance().init();
 		InventoryManager.getInstance().init(this);
+		ChatManager.getInstance().init(this);
 
 		this.getLifecycleManager().registerEventHandler(LifecycleEvents.COMMANDS, commands -> {
 			Commands registrar = commands.registrar();

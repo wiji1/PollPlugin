@@ -32,7 +32,7 @@ public class ResponseItemStack extends CustomItemStack {
 
 	@Override
 	public void build() {
-		itemStack = new ItemStack(Material.SLIME_BALL);
+		itemStack = new ItemStack(response.getIcon());
 
 		ItemMeta meta = itemStack.getItemMeta();
 		meta.customName(response.getText().decoration(TextDecoration.ITALIC, false));
