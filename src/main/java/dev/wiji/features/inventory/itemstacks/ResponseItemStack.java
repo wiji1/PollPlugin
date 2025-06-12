@@ -7,9 +7,7 @@ import dev.wiji.features.poll.models.Poll;
 import dev.wiji.features.poll.models.PollResponse;
 import dev.wiji.utils.PercentageBarUtils;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -50,6 +48,7 @@ public class ResponseItemStack extends CustomItemStack {
 					.append(Component.text(poll.getVotes(response), NamedTextColor.YELLOW))
 					.decoration(TextDecoration.ITALIC, false));
 
+			lore.add(Component.empty());
 
 			Component percentageBar = PercentageBarUtils.createGradientPercentageBar(poll.getVotePercentage(response));
 			lore.add(percentageBar.decoration(TextDecoration.ITALIC, false));

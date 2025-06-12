@@ -40,26 +40,13 @@ public class PollInventory extends CustomInventory {
 			return;
 		}
 
-		int responseIndex = 0;
-		for(int row = 2; row < getRows(); row++) {
-			int responsesLeft = responses.size() - responseIndex;
-			if(responsesLeft <= 0) {
-				break;
-			}
+		Integer[] slots = getSlots(responses.size());
 
-			int itemsInThisRow = Math.min(responsesLeft, 5);
-
-			int totalWidth = (itemsInThisRow * 2) - 1;
-
-			int startCol = (9 - totalWidth) / 2;
-			int rowBaseSlot = row * 9;
-
-			for(int i = 0; i < itemsInThisRow; i++) {
-				ResponseItemStack responseItem = new ResponseItemStack(poll, responses.get(responseIndex + i), player);
-				inventory.setItem(rowBaseSlot + startCol + (i * 2), responseItem.getItemStack());
-			}
-
-			responseIndex += itemsInThisRow;
+		for (int i = 0; i < responses.size(); i++) {
+			PollResponse response = responses.get(i);
+			ResponseItemStack responseItem = new ResponseItemStack(poll, response, player);
+			ItemStack itemStack = responseItem.getItemStack();
+			inventory.setItem(slots[i], itemStack);
 		}
 
 		ItemStack backButton = new BackItemStack(player).getItemStack();
@@ -68,9 +55,7 @@ public class PollInventory extends CustomInventory {
 
 	@Override
 	public int getRows() {
-		int responseCount = poll.getResponses().length;
-		int responseRows = (int) Math.ceil(responseCount / 5.0);
-		return Math.min(6, 4 + responseRows);
+		return 5;
 	}
 
 	@Override
@@ -119,5 +104,17 @@ public class PollInventory extends CustomInventory {
 			InventoryManager.getInstance().openInventory(pollListInventory);
 		}
 
+	}
+
+	private Integer[] getSlots(int choices) {
+		switch(choices) {
+			case 1: return new Integer[]{22};
+			case 2: return new Integer[]{21, 23};
+			case 3: return new Integer[]{20, 22, 24};
+			case 4: return new Integer[]{19, 21, 23, 25};
+			case 5: return new Integer[]{11, 15, 22, 29, 33};
+			case 6: return new Integer[]{12, 14, 19, 25, 30, 32};
+			default: return new Integer[0];
+		}
 	}
 }

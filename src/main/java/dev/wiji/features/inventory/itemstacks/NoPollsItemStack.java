@@ -21,15 +21,15 @@ public class NoPollsItemStack extends CustomItemStack {
 
 	@Override
 	public void build() {
-		itemStack = new ItemStack(Material.BARREL);
+		itemStack = new ItemStack(Material.BARRIER);
 		ItemMeta meta = itemStack.getItemMeta();
 
 		meta.displayName(Component.text("No Polls Available")
 				.color(NamedTextColor.RED)
 				.decoration(TextDecoration.ITALIC, false));
 
-		meta.lore(List.of(Component.text("Come back later when polls are active")
-				.decoration(TextDecoration.ITALIC, false)));
+		meta.lore(List.of(Component.empty(), Component.text("Come back later when polls are active",
+						NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false)));
 
 		itemStack.setItemMeta(meta);
 	}

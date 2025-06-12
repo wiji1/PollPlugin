@@ -24,7 +24,7 @@ public class CreateCommand extends SubCommand {
 		TextComponent question = Component.text("Whats your favorite color?").color(TextColor.color(0, 0, 100));
 
 		PollResponse response1 = new PollResponse(
-				Component.text("Red").color(TextColor.color(255, 255, 255))
+				Component.text("Red").color(TextColor.color(255, 0, 0))
 		);
 
 		PollResponse response2 = new PollResponse(
@@ -35,9 +35,21 @@ public class CreateCommand extends SubCommand {
 				Component.text("Blue").color(TextColor.color(0, 0, 255))
 		);
 
+		PollResponse response4 = new PollResponse(
+				Component.text("Yellow").color(TextColor.color(255, 0, 255))
+		);
+
+		PollResponse response5 = new PollResponse(
+				Component.text("Purple").color(TextColor.color(100, 0, 255))
+		);
+
+		PollResponse response6 = new PollResponse(
+				Component.text("Orange").color(TextColor.color(255, 100, 0))
+		);
+
 		Poll poll = new Poll(
 				question,
-				new PollResponse[]{response1, response2, response3},
+				new PollResponse[]{response1, response2, response3, response4, response5, response6},
 				300000L
 		);
 

@@ -45,6 +45,11 @@ public class PollListInventory extends CustomInventory {
 		int startIndex = page * POLLS_PER_PAGE;
 		int endIndex = Math.min(startIndex + POLLS_PER_PAGE, polls.size());
 
+		if (polls.isEmpty()) {
+			inventory.setItem(22, new NoPollsItemStack(player).getItemStack());
+			return;
+		}
+
 		if (startIndex >= polls.size()) return;
 
 		List<Poll> pollsOnPage = polls.subList(startIndex, endIndex);
@@ -60,10 +65,6 @@ public class PollListInventory extends CustomInventory {
 
 			inventory.setItem(availableSlots[slotIndex], pollItem);
 			slotIndex++;
-		}
-
-		if (pollsOnPage.isEmpty()) {
-			inventory.setItem(22, new NoPollsItemStack(player).getItemStack());
 		}
 	}
 
