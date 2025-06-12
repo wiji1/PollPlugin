@@ -35,7 +35,7 @@ public class ResponseItemStack extends CustomItemStack {
 		itemStack = new ItemStack(response.getIcon());
 
 		ItemMeta meta = itemStack.getItemMeta();
-		meta.customName(response.getText().decoration(TextDecoration.ITALIC, false));
+		meta.customName(response.getText().decoration(TextDecoration.ITALIC, false).colorIfAbsent(NamedTextColor.YELLOW));
 
 		List<Component> lore = new ArrayList<>();
 		lore.add(Component.text(""));

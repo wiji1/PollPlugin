@@ -14,7 +14,9 @@ import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class PollCreateDurationItemStack extends CustomItemStack {
 
@@ -38,7 +40,11 @@ public class PollCreateDurationItemStack extends CustomItemStack {
 		List<Component> lore = new ArrayList<>();
 		lore.add(Component.empty());
 
-		lore.add(Component.text(TimeUtils.formatDuration(duration), NamedTextColor.WHITE)
+		String formattedDuration = Arrays.stream(TimeUtils.formatDuration(duration).split(" "))
+				.map(word -> word.isEmpty() ? word : Character.toUpperCase(word.charAt(0)) + word.substring(1))
+				.collect(Collectors.joining(" "));
+
+		lore.add(Component.text(formattedDuration, NamedTextColor.WHITE)
 				.decoration(TextDecoration.ITALIC, false));
 
 		lore.add(Component.empty());

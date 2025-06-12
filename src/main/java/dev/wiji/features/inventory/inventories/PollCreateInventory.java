@@ -12,6 +12,7 @@ import dev.wiji.features.poll.controllers.PollManager;
 import dev.wiji.features.poll.models.Poll;
 import dev.wiji.features.poll.models.PollResponse;
 import dev.wiji.features.sound.PluginSound;
+import dev.wiji.utils.ColorUtils;
 import dev.wiji.utils.TimeUtils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
@@ -123,11 +124,11 @@ public class PollCreateInventory extends CustomInventory {
 
 				PluginSound.CLICK.play(player);
 				ChatManager.getInstance().promptChat(player, prompt, (response) -> {
-					//TODO: parse into component
+					TextComponent colored = ColorUtils.colorize(response);
 
 					if (response != null) {
 						PluginSound.SUCCESS.play(player);
-						questionItem.updateQuestion(Component.text(response, NamedTextColor.GRAY));
+						questionItem.updateQuestion(colored);
 						build();
 					}
 
@@ -157,13 +158,14 @@ public class PollCreateInventory extends CustomInventory {
 				Component prompt = Component.text("Please enter the poll response:", NamedTextColor.GOLD);
 				player.closeInventory();
 
+				PluginSound.CLICK.play(player);
 				ChatManager.getInstance().promptChat(player, prompt, (response) -> {
-					//TODO: parse into component
+					TextComponent colored = ColorUtils.colorize(response);
 
 					if (response != null) {
 						PluginSound.SUCCESS.play(player);
 						if (responseItem.getResponse() == null) responseItem.updateMaterial(Material.PAPER);
-						responseItem.updateResponse(Component.text(response, NamedTextColor.GRAY));
+						responseItem.updateResponse(colored);
 						build();
 					}
 
@@ -217,6 +219,7 @@ public class PollCreateInventory extends CustomInventory {
 				}
 
 				if (time > 0) {
+					PluginSound.SUCCESS.play(player);
 					durationItem.updateDuration(time);
 					build();
 				}

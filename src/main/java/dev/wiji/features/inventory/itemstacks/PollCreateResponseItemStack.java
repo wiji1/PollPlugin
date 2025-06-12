@@ -40,7 +40,12 @@ public class PollCreateResponseItemStack extends CustomItemStack {
 		List<Component> lore = new ArrayList<>();
 		lore.add(Component.empty());
 
-		lore.add(response != null ? response : Component.text("None!", NamedTextColor.RED)
+		if (response != null) {
+			lore.add(Component.text("\"", NamedTextColor.GRAY)
+					.append(response)
+					.append(Component.text("\"", NamedTextColor.GRAY)
+					).decoration(TextDecoration.ITALIC, false));
+		} else lore.add(Component.text("None!", NamedTextColor.RED)
 				.decoration(TextDecoration.ITALIC, false));
 
 		lore.add(Component.empty());
@@ -66,11 +71,8 @@ public class PollCreateResponseItemStack extends CustomItemStack {
 		build();
 	}
 
-	public void updateResponse(Component response) {
-		this.response = Component.text("\"", NamedTextColor.GRAY)
-				.append(response)
-				.append(Component.text("\"", NamedTextColor.GRAY))
-				.decoration(TextDecoration.ITALIC, false);
+	public void updateResponse(TextComponent response) {
+		this.response = response.decoration(TextDecoration.ITALIC, false);
 		build();
 	}
 

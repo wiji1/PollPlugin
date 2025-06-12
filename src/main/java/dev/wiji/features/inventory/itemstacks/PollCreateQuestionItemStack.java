@@ -42,7 +42,8 @@ public class PollCreateQuestionItemStack extends CustomItemStack {
 			lore.add(Component.text("\"", NamedTextColor.GRAY)
 					.append(question)
 					.append(Component.text("\"", NamedTextColor.GRAY)
-					.decoration(TextDecoration.ITALIC, false)));
+					).decoration(TextDecoration.ITALIC, false));
+
 		} else lore.add(Component.text("None!", NamedTextColor.RED)
 				.decoration(TextDecoration.ITALIC, false));
 

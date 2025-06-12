@@ -103,6 +103,7 @@ public class PollInventory extends CustomInventory {
 			poll.respond((Player) event.getWhoClicked(), UUID.fromString(value));
 
 			PluginSound.SUCCESS.play(player);
+			player.sendMessage(Component.text("Your vote has been recorded!", NamedTextColor.GREEN));
 			inventory.close();
 		} else if (container.has(ItemKey.BACK.get())) {
 			PluginSound.CLICK.play(player);

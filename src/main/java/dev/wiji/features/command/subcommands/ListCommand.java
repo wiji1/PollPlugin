@@ -22,7 +22,6 @@ public class ListCommand extends SubCommand {
 			Collections.nCopies(SEPARATOR_LENGTH, " ")),
 			NamedTextColor.GRAY).decorate(TextDecoration.STRIKETHROUGH);
 
-
 	public ListCommand() {
 		super("list", Permission.ADMIN.get());
 		addOptionalArgument("page", IntegerArgumentType.integer());

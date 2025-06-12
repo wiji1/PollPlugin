@@ -17,9 +17,6 @@ public class PollPlugin extends JavaPlugin {
 	@Override
 	public void onEnable() {
 		instance = this;
-
-		getLogger().info("PollPlugin has been enabled!");
-
 		ConfigManager.getInstance().init(this);
 		StorageManager.getInstance().init();
 		PollManager.getInstance().init();
@@ -30,10 +27,14 @@ public class PollPlugin extends JavaPlugin {
 			Commands registrar = commands.registrar();
 			CommandManager.getInstance().init(registrar);
 		});
+
+		getLogger().info("PollPlugin has been enabled!");
 	}
 
 	@Override
 	public void onDisable() {
+		StorageManager.getInstance().getStorage().close();
+
 		getLogger().info("PollPlugin has been disabled!");
 	}
 

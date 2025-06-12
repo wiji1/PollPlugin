@@ -9,7 +9,6 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -34,7 +33,7 @@ public class PollItemStack extends CustomItemStack {
 		itemStack = new ItemStack(poll.getIcon());
 		ItemMeta meta = itemStack.getItemMeta();
 
-		meta.displayName(poll.getQuestion().decoration(TextDecoration.ITALIC, false));
+		meta.displayName(poll.getQuestion().decoration(TextDecoration.ITALIC, false).colorIfAbsent(NamedTextColor.YELLOW));
 
 		List<Component> lore = new ArrayList<>();
 		lore.add(Component.empty());
@@ -56,12 +55,14 @@ public class PollItemStack extends CustomItemStack {
 
 		lore.add(Component.empty());
 
+		boolean hasVoted = poll.getPlayerResponses().containsKey(player.getUniqueId());
+		if (!hasVoted) meta.setEnchantmentGlintOverride(true);
+
 		if (poll.getStatus() == PollStatus.CLOSED) {
 			lore.add(Component.text("Click to view results", NamedTextColor.YELLOW).decoration(TextDecoration.ITALIC, false));
 
 		} else {
-			boolean hasVoted = poll.getPlayerResponses().containsKey(player.getUniqueId());
-			String clickText = hasVoted ? "You have already voted on this poll" : "Click to vote on this poll";
+			String clickText = hasVoted ? "You already voted on this poll" : "Click to vote on this poll";
 			TextColor textColor = hasVoted ? NamedTextColor.RED : NamedTextColor.GREEN;
 			lore.add(Component.text(clickText, textColor).decoration(TextDecoration.ITALIC, false));
 		}
